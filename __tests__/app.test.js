@@ -1,4 +1,3 @@
-
 const request = require('supertest');
 const { response } = require('../app');
 const app = require('../app');
@@ -24,5 +23,13 @@ describe('GET /api/topics', () => {
         })
     })
 
+})
+test('404: responds with not found when passed with the wrong endpoint', () => {
+    return request(app)
+    .get('/api/tropics')
+    .expect(404)
+    .then(({body}) => {
+        expect(body.msg).toBe('Not found')
+    })
 })
 })

@@ -1,1 +1,1 @@
-You will need to create two .env files `.env.test` and `.env.development`. Into each, add `PGDATABASE=PGDATABASE=nc_news_test` and `PGDATABASE=PGDATABASE=nc_new`
+You will need to create two .env files `.env.test` and `.env.development`. Into each, add `PGDATABASE=nc_news_test` and `PGDATABASE=nc_new`

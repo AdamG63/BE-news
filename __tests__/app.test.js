@@ -24,7 +24,7 @@ describe('GET /api/topics', () => {
     })
 
 })
-test('404: responds with not found when passed with the wrong endpoint', () => {
+test('404: responds with not found when passed with a invalid endpoint', () => {
     return request(app)
     .get('/api/tropics')
     .expect(404)

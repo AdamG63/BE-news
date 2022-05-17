@@ -10,5 +10,4 @@ exports.fetchTopics = () => {
        }
         return result.rows
     })
-
 }

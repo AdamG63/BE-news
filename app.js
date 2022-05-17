@@ -12,18 +12,11 @@ app.get('/api/articles/:article_id', getArticleById)
 app.patch('/api/articles/:article_id', patchArticleById)
 
 app.use((err, req, res, next) => {
-   if(err.code === '22P02'){
+   if(err.code === '22P02' || err.code === '23502'){
        res.status(400).send({message: 'Bad request'})
    } else { 
        next(err) }
 })
-
-app.use((err, req, res, next) => {
-    if(err.code === '23502'){
-        res.status(400).send({message: 'Bad request'})
-    } else { 
-        next(err) }
- })
 
 app.use((err, req, res, next) => {
     if(err.status === 404){

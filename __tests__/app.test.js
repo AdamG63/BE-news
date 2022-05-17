@@ -50,7 +50,7 @@ describe('GET /api/articles/:articles_id', () => {
         })
     })
 })
-    test('400: responds with bad request when passed a bad use ID', () => {
+    test('400: responds with bad request when passed a bad article ID', () => {
     return request(app)
     .get('/api/articles/notAnID')
     .expect(400)
@@ -68,4 +68,78 @@ describe('GET /api/articles/:articles_id', () => {
 })
 
 })
+    
+})
+describe('PATCH /api/articles/:articles_id', () => {
+    test('200: responds with updated article', () => {
+        const ARTICLE_ID = 1
+        const articleUpdates = {
+            inc_votes: 100,
+        };
+        return request(app)
+        .patch(`/api/articles/${ARTICLE_ID}`)
+        .send(articleUpdates)
+        .expect(200)
+        .then(({ body }) => {
+            expect(body.article).toEqual({
+                article_id: ARTICLE_ID,
+                title: "Living in the shadow of a great man",
+                topic: "mitch",
+                author: "butter_bridge",
+                body: "I find this existence challenging",
+                created_at: '2020-07-09T20:11:00.000Z',
+                votes: 200,
+              })
+        })
+    })
+    test('400: responds with a bad request when passed a bad article ID', () => {
+        const ARTICLE_ID = 'notAnId'
+        const articleUpdates = {
+            inc_votes: 100,
+        };
+        return request(app)
+        .patch(`/api/articles/${ARTICLE_ID}`)
+        .send(articleUpdates)
+        .expect(400)
+        .then(({ body }) => {
+        expect(body.message).toBe('Bad request')
+        })
+    })
+    test('404: responds with not found when passed a ID that does not exist', () => {
+        const ARTICLE_ID = 99
+        const articleUpdates = {
+            inc_votes: 100,
+        };
+        return request(app)
+        .patch(`/api/articles/${ARTICLE_ID}`)
+        .send(articleUpdates)
+        .expect(404)
+        .then(({body})=> {
+        expect(body.msg).toBe('Not found')
+        })
+    })
+    test('400: responds with a bad request when passed inc-votes in wrong format', () => {
+        const ARTICLE_ID = 1
+        const articleUpdates = {
+            inc_votes: 'notNumber',
+        };
+        return request(app)
+        .patch(`/api/articles/${ARTICLE_ID}`)
+        .send(articleUpdates)
+        .expect(400)
+        .then(({ body }) => {
+        expect(body.message).toBe('Bad request')
+        })
+    })
+    test('400: responds with bad request when passed a missing article updates', () => {
+        const ARTICLE_ID = 1
+        const articleUpdates = {};
+        return request(app)
+        .patch(`/api/articles/${ARTICLE_ID}`)
+        .send(articleUpdates)
+        .expect(400)
+        .then(({body})=> {
+        expect(body.message).toBe('Bad request')
+        })
+    })
 })

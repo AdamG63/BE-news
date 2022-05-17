@@ -131,17 +131,14 @@ describe('PATCH /api/articles/:articles_id', () => {
         expect(body.message).toBe('Bad request')
         })
     })
-    test('400: responds with not found when passed a missing inc_votes', () => {
+    test('400: responds with bad request when passed a missing article updates', () => {
         const ARTICLE_ID = 1
-        const articleUpdates = {
-            inc_votes: []
-        };
+        const articleUpdates = {};
         return request(app)
         .patch(`/api/articles/${ARTICLE_ID}`)
         .send(articleUpdates)
         .expect(400)
         .then(({body})=> {
-            console.log(body)
         expect(body.message).toBe('Bad request')
         })
     })

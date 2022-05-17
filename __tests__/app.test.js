@@ -144,7 +144,7 @@ describe('PATCH /api/articles/:articles_id', () => {
     })
 })
 describe('GET /api/users', () => {
-    test('200: responds with an array of objects with the username property', () => {
+    test('200: responds with an array of objects with the username, name and avatar_url properties', () => {
         return request(app)
         .get('/api/users')
         .expect(200)

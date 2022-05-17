@@ -1,6 +1,7 @@
 const express = require('express');
 const { getTopics } = require('./controller/topics.contoller');
 const { getArticleById, patchArticleById } = require('./controller/articles.controller');
+const { getUsers } = require('./controller/users.controller')
 const app = express();
 
 app.use(express.json())
@@ -10,6 +11,8 @@ app.get('/api/topics', getTopics);
 app.get('/api/articles/:article_id', getArticleById)
 
 app.patch('/api/articles/:article_id', patchArticleById)
+
+app.get('/api/users', getUsers)
 
 app.use((err, req, res, next) => {
    if(err.code === '22P02' || err.code === '23502'){

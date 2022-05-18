@@ -199,4 +199,22 @@ describe('GET /api/articles', () => {
         })
 
     })
+    test('400: responds with Bad request to invalid order queries', () => {
+        return request(app)
+        .get('/api/articles?sort_by=created_at&&order_by=descending')
+        .expect(400)
+        .then(({body}) => {
+            console.log(body)
+            expect(body.message).toBe('Bad request')
+        })
+    })
+    test('400: responds with Bad request to invalid sort by queries', () => {
+        return request(app)
+        .get('/api/articles?sort_by=54')
+        .expect(400)
+        .then(({body}) => {
+            console.log(body)
+            expect(body.message).toBe('Bad request')
+        })
+    })
 })

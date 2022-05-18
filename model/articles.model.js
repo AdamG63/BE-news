@@ -34,10 +34,14 @@ exports.fetchArticles = (sortBy = 'author', order = 'ASC') => {
 
     if(sortByGreenList.includes(sortBy)){
         queryStr += ` ORDER BY ${sortBy}`
+    } else {
+       return Promise.reject({status: 400, message: 'Bad request'})
     }
 
     if(orderGreenList.includes(order.toUpperCase())) {
         queryStr += ` ${order.toUpperCase()}`
+    } else {
+       return Promise.reject({status: 400, message: "Bad request"})
     }
     return db.query(queryStr).then((result) => {
         return result.rows

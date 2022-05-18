@@ -24,6 +24,14 @@ app.use((err, req, res, next) => {
 })
 
 app.use((err, req, res, next) => {
+    if(err.status === 400){
+        res.status(400).send({message: 'Bad request'})
+    } else {
+        next(err)
+    }
+})
+
+app.use((err, req, res, next) => {
     if(err.status === 404){
         res.status(404).send({msg: 'Not found'})
     } else {

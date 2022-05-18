@@ -213,7 +213,6 @@ describe('GET /api/articles', () => {
         .get('/api/articles?sort_by=54')
         .expect(400)
         .then(({body}) => {
-            console.log(body)
             expect(body.message).toBe('Bad request')
         })
     })

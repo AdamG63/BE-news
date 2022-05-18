@@ -47,6 +47,25 @@ describe('GET /api/articles/:articles_id', () => {
             topic: "mitch",
             created_at: '2020-07-09T20:11:00.000Z',
             votes: 100,
+            comment_count: expect.any(Number)
+        })
+    })
+})
+    test('200: responds with single matching article including a comment count', () => {
+    const ARTICLE_ID = 1;
+    return request(app)
+    .get(`/api/articles/${ARTICLE_ID}`)
+    .expect(200)
+    .then(({body})=> {
+        expect(body.article).toEqual({
+            article_id: ARTICLE_ID,
+            title: "Living in the shadow of a great man",
+            author: "butter_bridge",
+            body: "I find this existence challenging",
+            topic: "mitch",
+            created_at: '2020-07-09T20:11:00.000Z',
+            votes: 100,
+            comment_count: 11
         })
     })
 })

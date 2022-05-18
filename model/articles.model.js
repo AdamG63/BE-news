@@ -1,4 +1,5 @@
 const db = require('../db/connection');
+const { sort } = require('../db/data/test-data')
 
 exports.selectArticleById = (article_id) => {
     return db.query('SELECT articles.*, COUNT(comments.comment_id) ::INT AS comment_count FROM articles LEFT JOIN comments ON articles.article_id = comments.article_id WHERE articles.article_id = $1 GROUP BY articles.article_id', [article_id]).then(({rows}) => {
@@ -22,5 +23,23 @@ exports.updateArticleById = (article_id, updateBody) => {
             })
         }
         return rows[0]
+    })
+}
+
+exports.fetchArticles = (sortBy = 'author', order = 'ASC') => {
+    let queryStr = `SELECT articles.author, articles.title, articles.article_id, articles.topic, articles.created_at, COUNT(comments.comment_id) ::INT AS comment_count FROM articles LEFT JOIN comments ON articles.article_id = comments.article_id GROUP BY articles.article_id`
+    
+    const sortByGreenList = ['author', 'title', 'article_id', 'topic', 'created_at', 'votes']
+    const orderGreenList = ['DESC', 'ASC']
+
+    if(sortByGreenList.includes(sortBy)){
+        queryStr += ` ORDER BY ${sortBy}`
+    }
+
+    if(orderGreenList.includes(order.toUpperCase())) {
+        queryStr += ` ${order.toUpperCase()}`
+    }
+    return db.query(queryStr).then((result) => {
+        return result.rows
     })
 }

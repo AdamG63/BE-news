@@ -1,6 +1,6 @@
 const express = require('express');
 const { getTopics } = require('./controller/topics.contoller');
-const { getArticleById, patchArticleById } = require('./controller/articles.controller');
+const { getArticleById, patchArticleById, getArticles } = require('./controller/articles.controller');
 const { getUsers } = require('./controller/users.controller')
 const app = express();
 
@@ -13,6 +13,8 @@ app.get('/api/articles/:article_id', getArticleById)
 app.patch('/api/articles/:article_id', patchArticleById)
 
 app.get('/api/users', getUsers)
+
+app.get('/api/articles', getArticles)
 
 app.use((err, req, res, next) => {
    if(err.code === '22P02' || err.code === '23502'){
@@ -33,6 +35,7 @@ app.all('/*', (req, res) => {
     res.status(404).send({msg: 'Not found'})
 })
 app.use((err, req, res, next) => {
+    console.log(err)
     res.status(500).send('internal server error');
 });
 

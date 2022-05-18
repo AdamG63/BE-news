@@ -189,3 +189,14 @@ describe('GET /api/users', () => {
         })
 })
 })
+describe('GET /api/articles', () => {
+    test('200: responds with articles sorted by created_at in descending order',() => {
+        return request(app)
+        .get('/api/articles?sort_by=created_at&&order_by=desc')
+        .expect(200)
+        .then(({body}) => {
+            expect(body.articles).toBeSortedBy('created_at', {descending: true})
+        })
+
+    })
+})

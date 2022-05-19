@@ -200,7 +200,6 @@ describe("GET /api/articles", () => {
       .get("/api/articles?sort_by=created_at&&order_by=descending")
       .expect(400)
       .then(({ body }) => {
-        console.log(body);
         expect(body.message).toBe("Bad request");
       });
   });
@@ -220,8 +219,8 @@ describe("GET /api/articles/:article_id/comments", () => {
       .get(`/api/articles/${ARTICLE_ID}/comments`)
       .expect(200)
       .then(({ body }) => {
-        expect(body.result).toHaveLength(2);
-        body.result.forEach((comment) => {
+        expect(body).toHaveLength(2);
+        body.forEach((comment) => {
           expect.objectContaining({
             comment_id: expect.any(Number),
             votes: expect.any(Number),
@@ -238,7 +237,7 @@ describe("GET /api/articles/:article_id/comments", () => {
       .get(`/api/articles/${ARTICLE_ID}/comments`)
       .expect(200)
       .then(({ body }) => {
-        expect(body.result).toEqual([]);
+        expect(body).toEqual([]);
       });
   });
   test("400: responds with bad request when passed with an invalid endpoint", () => {

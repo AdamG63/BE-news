@@ -1,3 +1,4 @@
+const { TestWatcher } = require("jest");
 const request = require("supertest");
 const { response } = require("../app");
 const app = require("../app");
@@ -258,4 +259,80 @@ describe("GET /api/articles/:article_id/comments", () => {
         expect(body.msg).toBe("Not found");
       });
   });
+});
+describe("POST /api/articles/:article_id/comments", () => {
+  test("201: responds with comment added to database", () => {
+    const newComment = {
+      body: "hello this is a test",
+      username: "icellusedkars",
+    };
+    const ARTICLE_ID = 9;
+    return request(app)
+      .post(`/api/articles/${ARTICLE_ID}/comments`)
+      .send(newComment)
+      .expect(201)
+      .then(({ body }) => {
+        expect(body.comment).toEqual({
+          votes: 0,
+          article_id: ARTICLE_ID,
+          created_at: expect.any(String),
+          body: "hello this is a test",
+          author: "icellusedkars",
+          comment_id: 19,
+        });
+      });
+  });
+  test("400: responds with a bad request when passed a bad article ID", () => {
+    const newComment = {
+      body: "hello this is a test",
+      username: "icellusedkars",
+    };
+    const ARTICLE_ID = "notAnId";
+    return request(app)
+      .post(`/api/articles/${ARTICLE_ID}/comments`)
+      .send(newComment)
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.message).toBe("Bad request");
+      });
+  });
+  test("404: responds with not found when passed a ID that does not exist", () => {
+    const newComment = {
+      body: "hello this is a test",
+      username: "icellusedkars",
+    };
+    const ARTICLE_ID = 99;
+    return request(app)
+      .post(`/api/articles/${ARTICLE_ID}/comments`)
+      .send(newComment)
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Not found");
+      });
+  });
+});
+test("400: responds with a bad request when passed missing newComment", () => {
+  const newComment = {};
+  const ARTICLE_ID = 9;
+  return request(app)
+    .post(`/api/articles/${ARTICLE_ID}/comments`)
+    .send(newComment)
+    .expect(400)
+    .then(({ body }) => {
+      expect(body.message).toBe("Bad request");
+    });
+});
+test("404: responds with not found when passed a username that does not exist", () => {
+  const newComment = {
+    body: "hello this is a test",
+    username: "Adam",
+  };
+  const ARTICLE_ID = 9;
+  return request(app)
+    .post(`/api/articles/${ARTICLE_ID}/comments`)
+    .send(newComment)
+    .expect(404)
+    .then(({ body }) => {
+      expect(body.msg).toBe("Not found");
+    });
 });

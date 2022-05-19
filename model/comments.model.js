@@ -1,17 +1,13 @@
 const db = require("../db/connection");
-
+const { checkExists } = require("../db/helpers/utils");
 exports.fetchCommentsById = (article_id) => {
-  return db
-    .query("SELECT * FROM articles WHERE article_id = $1", [article_id])
-    .then(({ rows }) => {
-      if (!rows.length) {
-        return Promise.reject({ status: 404, message: "Not found" });
-      } else {
-        return db
-          .query("SELECT * FROM comments WHERE article_id = $1", [article_id])
-          .then(({ rows }) => {
-            return rows;
-          });
-      }
-    });
+  const promise1 = db.query("SELECT * FROM comments WHERE article_id = $1", [
+    article_id,
+  ]);
+  const promise2 = checkExists("articles", "article_id", article_id);
+  return Promise.all([promise1, promise2]).then(([comments, article]) => {
+    if (article) {
+      return comments.rows;
+    }
+  });
 };

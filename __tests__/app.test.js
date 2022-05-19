@@ -310,29 +310,29 @@ describe("POST /api/articles/:article_id/comments", () => {
         expect(body.msg).toBe("Not found");
       });
   });
-});
-test("400: responds with a bad request when passed missing newComment", () => {
-  const newComment = {};
-  const ARTICLE_ID = 9;
-  return request(app)
-    .post(`/api/articles/${ARTICLE_ID}/comments`)
-    .send(newComment)
-    .expect(400)
-    .then(({ body }) => {
-      expect(body.message).toBe("Bad request");
-    });
-});
-test("404: responds with not found when passed a username that does not exist", () => {
-  const newComment = {
-    body: "hello this is a test",
-    username: "Adam",
-  };
-  const ARTICLE_ID = 9;
-  return request(app)
-    .post(`/api/articles/${ARTICLE_ID}/comments`)
-    .send(newComment)
-    .expect(404)
-    .then(({ body }) => {
-      expect(body.msg).toBe("Not found");
-    });
+  test("400: responds with a bad request when passed missing newComment", () => {
+    const newComment = {};
+    const ARTICLE_ID = 9;
+    return request(app)
+      .post(`/api/articles/${ARTICLE_ID}/comments`)
+      .send(newComment)
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.message).toBe("Bad request");
+      });
+  });
+  test("404: responds with not found when passed a username that does not exist", () => {
+    const newComment = {
+      body: "hello this is a test",
+      username: "Adam",
+    };
+    const ARTICLE_ID = 9;
+    return request(app)
+      .post(`/api/articles/${ARTICLE_ID}/comments`)
+      .send(newComment)
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Not found");
+      });
+  });
 });

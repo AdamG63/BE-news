@@ -11,6 +11,7 @@ exports.getCommentsById = (req, res, next) => {
 
 exports.postComments = (req, res, next) => {
   const { article_id } = req.params;
+  console.log(article_id);
   const updateBody = req.body;
   insertComment(article_id, updateBody)
     .then((comment) => {

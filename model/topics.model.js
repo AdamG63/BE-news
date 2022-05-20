@@ -20,7 +20,6 @@ exports.fetchSlugs = () => {
         msg: "Not found",
       });
     }
-    console.log(Object.values(result.rows));
     return result.rows;
   });
 };

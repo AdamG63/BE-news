@@ -226,7 +226,7 @@ describe("GET /api/articles", () => {
       });
   });
 
-  test("400: responds with Bad request to invalid order queries", () => {
+  test("400: responds with Bad request to invalid order queries eg 'descending' instead of desc", () => {
     return request(app)
       .get("/api/articles?sort_by=created_at&&order_by=descending&&topic=cats")
       .expect(400)

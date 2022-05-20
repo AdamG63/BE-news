@@ -1,5 +1,6 @@
 const db = require("../db/connection");
-const { sort } = require("../db/data/test-data");
+const { checkExists } = require("../db/helpers/utils");
+const { fetchTopics } = require("../model/topics.model");
 
 exports.selectArticleById = (article_id) => {
   return db
@@ -36,9 +37,8 @@ exports.updateArticleById = (article_id, updateBody) => {
     });
 };
 
-exports.fetchArticles = (sortBy = "author", order = "ASC") => {
-  let queryStr = `SELECT articles.author, articles.title, articles.article_id, articles.topic, articles.created_at, COUNT(comments.comment_id) ::INT AS comment_count FROM articles LEFT JOIN comments ON articles.article_id = comments.article_id GROUP BY articles.article_id`;
-
+exports.fetchArticles = (sortBy = "created_at", order = "DESC", topic) => {
+  let queryStr = `SELECT articles.author, articles.title, articles.article_id, articles.topic, articles.created_at, COUNT(comments.comment_id) ::INT AS comment_count FROM articles LEFT JOIN comments ON articles.article_id = comments.article_id`;
   const sortByGreenList = [
     "author",
     "title",
@@ -47,20 +47,32 @@ exports.fetchArticles = (sortBy = "author", order = "ASC") => {
     "created_at",
     "votes",
   ];
+
   const orderGreenList = ["DESC", "ASC"];
+  const paramsVal = [];
 
-  if (sortByGreenList.includes(sortBy)) {
-    queryStr += ` ORDER BY ${sortBy}`;
-  } else {
+  if (
+    isNaN(topic) === false ||
+    sortByGreenList.includes(sortBy) === false ||
+    orderGreenList.includes(order.toUpperCase()) === false
+  ) {
     return Promise.reject({ status: 400, message: "Bad request" });
   }
-
-  if (orderGreenList.includes(order.toUpperCase())) {
-    queryStr += ` ${order.toUpperCase()}`;
-  } else {
-    return Promise.reject({ status: 400, message: "Bad request" });
+  if (topic !== undefined) {
+    queryStr += ` WHERE articles.topic = $1`;
+    paramsVal.push(topic);
   }
-  return db.query(queryStr).then((result) => {
-    return result.rows;
+
+  queryStr += ` GROUP BY articles.article_id ORDER BY ${sortBy} ${order.toUpperCase()}`;
+
+  const promise1 = db.query(queryStr, paramsVal);
+  const promiseAllArr = [promise1];
+  if (topic !== undefined) {
+    const promise2 = checkExists("topics", "slug", topic);
+    promiseAllArr.push(promise2);
+  }
+  return Promise.all(promiseAllArr).then(([articles, topic]) => {
+    console.log(articles.rows);
+    return articles.rows;
   });
 };

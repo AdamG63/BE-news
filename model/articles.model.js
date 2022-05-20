@@ -36,8 +36,12 @@ exports.updateArticleById = (article_id, updateBody) => {
     });
 };
 
-exports.fetchArticles = (sortBy = "author", order = "ASC") => {
-  let queryStr = `SELECT articles.author, articles.title, articles.article_id, articles.topic, articles.created_at, COUNT(comments.comment_id) ::INT AS comment_count FROM articles LEFT JOIN comments ON articles.article_id = comments.article_id GROUP BY articles.article_id`;
+exports.fetchArticles = (
+  sortBy = "created_at",
+  order = "DESC",
+  topic = ("cats", "mitch", "paper")
+) => {
+  let queryStr = `SELECT articles.author, articles.title, articles.article_id, articles.topic, articles.created_at, COUNT(comments.comment_id) ::INT AS comment_count FROM articles LEFT JOIN comments ON articles.article_id = comments.article_id`;
 
   const sortByGreenList = [
     "author",
@@ -47,10 +51,22 @@ exports.fetchArticles = (sortBy = "author", order = "ASC") => {
     "created_at",
     "votes",
   ];
+  const topicGreenList = ["mitch", "cats", "paper"];
   const orderGreenList = ["DESC", "ASC"];
+  const paramsVal = [];
+
+  if (isNaN(topic) === false) {
+    return Promise.reject({ status: 400, message: "Bad request" });
+  }
+  if (topicGreenList.includes(topic)) {
+    queryStr += ` WHERE articles.topic = $1`;
+    paramsVal.push(topic);
+  } else {
+    return Promise.reject({ status: 404, msg: "Not found" });
+  }
 
   if (sortByGreenList.includes(sortBy)) {
-    queryStr += ` ORDER BY ${sortBy}`;
+    queryStr += ` GROUP BY articles.article_id ORDER BY ${sortBy}`;
   } else {
     return Promise.reject({ status: 400, message: "Bad request" });
   }
@@ -60,7 +76,8 @@ exports.fetchArticles = (sortBy = "author", order = "ASC") => {
   } else {
     return Promise.reject({ status: 400, message: "Bad request" });
   }
-  return db.query(queryStr).then((result) => {
+  //const promise1 = db.query(queryStr, paramsVal)
+  return db.query(queryStr, paramsVal).then((result) => {
     return result.rows;
   });
 };

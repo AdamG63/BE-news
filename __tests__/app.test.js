@@ -189,15 +189,46 @@ describe("GET /api/users", () => {
 describe("GET /api/articles", () => {
   test("200: responds with articles sorted by created_at in descending order", () => {
     return request(app)
-      .get("/api/articles?sort_by=created_at&&order_by=desc")
+      .get("/api/articles")
       .expect(200)
       .then(({ body }) => {
         expect(body.articles).toBeSortedBy("created_at", { descending: true });
       });
   });
+  test("200: responds with articles sorted by default date, in order defaulted to descending and filters by topic", () => {
+    const TOPIC = "mitch";
+    return request(app)
+      .get(`/api/articles?topic=${TOPIC}`)
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.articles).toHaveLength(11);
+        expect(body.articles).toBeSortedBy("created_at", { descending: true });
+      });
+  });
+  test("200: responds with articles sorted by title, in ascending order and filters by topic", () => {
+    const TOPIC = "cats";
+    return request(app)
+      .get(`/api/articles?topic=${TOPIC}&&order_by=asc&&sort_by=title`)
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.articles).toHaveLength(1);
+        expect(body.articles).toBeSortedBy("title", { descending: false });
+      });
+  });
+  test("200: responds with a empty array when passed a topic (paper) that has no comments", () => {
+    const TOPIC = "paper";
+    return request(app)
+      .get(`/api/articles?topic=${TOPIC}`)
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.articles).toHaveLength(0);
+        expect(body.articles).toBeSortedBy("paper", { descending: true });
+      });
+  });
+
   test("400: responds with Bad request to invalid order queries", () => {
     return request(app)
-      .get("/api/articles?sort_by=created_at&&order_by=descending")
+      .get("/api/articles?sort_by=created_at&&order_by=descending&&topic=cats")
       .expect(400)
       .then(({ body }) => {
         expect(body.message).toBe("Bad request");
@@ -205,7 +236,25 @@ describe("GET /api/articles", () => {
   });
   test("400: responds with Bad request to invalid sort by queries", () => {
     return request(app)
-      .get("/api/articles?sort_by=54")
+      .get("/api/articles?sort_by=54&&topic=cats")
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.message).toBe("Bad request");
+      });
+  });
+  test("404: responds with not found to when passed a topic that does not exist", () => {
+    const TOPIC = "dogs";
+    return request(app)
+      .get(`/api/articles?topic=${TOPIC}&&order_by=asc&&sort_by=title`)
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Not found");
+      });
+  });
+  test("400: responds with bad request when passed a topic that is not valid", () => {
+    const TOPIC = 1;
+    return request(app)
+      .get(`/api/articles?topic=${TOPIC}&&order_by=asc&&sort_by=title`)
       .expect(400)
       .then(({ body }) => {
         expect(body.message).toBe("Bad request");

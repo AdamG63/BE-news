@@ -15,7 +15,6 @@ exports.fetchCommentsById = (article_id) => {
 
 exports.insertComment = (article_id, updateBody) => {
   const { body, username } = updateBody;
-  console.log(body);
   return db
     .query(
       "INSERT INTO comments (body, author, article_id) VALUES ($1, $2, $3) RETURNING *",

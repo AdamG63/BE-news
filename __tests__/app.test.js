@@ -384,3 +384,27 @@ describe("POST /api/articles/:article_id/comments", () => {
       });
   });
 });
+describe("DELETE /api/comments/:comment_id", () => {
+  test("204: responds with 204 when passed a suitable aritcle id to delete", () => {
+    const COMMENT_ID = 1;
+    return request(app).delete(`/api/comments/${COMMENT_ID}`).expect(204);
+  });
+  test("404: responds with not found when passed a comment_id that does not exist", () => {
+    const COMMENT_ID = 999;
+    return request(app)
+      .delete(`/api/comments/${COMMENT_ID}`)
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Not found");
+      });
+  });
+  test("400: responds with a bad request when passed a invalid comment id", () => {
+    const COMMENT_ID = "notAnId";
+    return request(app)
+      .delete(`/api/comments/${COMMENT_ID}`)
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.message).toBe("Bad request");
+      });
+  });
+});

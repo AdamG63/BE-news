@@ -72,7 +72,6 @@ exports.fetchArticles = (sortBy = "created_at", order = "DESC", topic) => {
     promiseAllArr.push(promise2);
   }
   return Promise.all(promiseAllArr).then(([articles, topic]) => {
-    console.log(articles.rows);
     return articles.rows;
   });
 };

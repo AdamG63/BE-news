@@ -1,5 +1,6 @@
 const db = require("../db/connection");
-const { sort } = require("../db/data/test-data");
+const { checkExists } = require("../db/helpers/utils");
+const { fetchTopics } = require("../model/topics.model");
 
 exports.selectArticleById = (article_id) => {
   return db
@@ -46,34 +47,32 @@ exports.fetchArticles = (sortBy = "created_at", order = "DESC", topic) => {
     "created_at",
     "votes",
   ];
-  const topicGreenList = '["mitch", "cats", "paper"]';
+
   const orderGreenList = ["DESC", "ASC"];
   const paramsVal = [];
 
-  if (isNaN(topic) === false) {
+  if (
+    isNaN(topic) === false ||
+    sortByGreenList.includes(sortBy) === false ||
+    orderGreenList.includes(order.toUpperCase()) === false
+  ) {
     return Promise.reject({ status: 400, message: "Bad request" });
   }
   if (topic !== undefined) {
-    if (topicGreenList.includes(topic)) {
-      queryStr += ` WHERE articles.topic = $1`;
-      paramsVal.push(topic);
-    } else {
-      return Promise.reject({ status: 404, msg: "Not found" });
-    }
-  }
-  if (sortByGreenList.includes(sortBy)) {
-    queryStr += ` GROUP BY articles.article_id ORDER BY ${sortBy}`;
-  } else {
-    return Promise.reject({ status: 400, message: "Bad request" });
+    queryStr += ` WHERE articles.topic = $1`;
+    paramsVal.push(topic);
   }
 
-  if (orderGreenList.includes(order.toUpperCase())) {
-    queryStr += ` ${order.toUpperCase()}`;
-  } else {
-    return Promise.reject({ status: 400, message: "Bad request" });
-  }
+  queryStr += ` GROUP BY articles.article_id ORDER BY ${sortBy} ${order.toUpperCase()}`;
 
-  return db.query(queryStr, paramsVal).then((result) => {
-    return result.rows;
+  const promise1 = db.query(queryStr, paramsVal);
+  const promiseAllArr = [promise1];
+  if (topic !== undefined) {
+    const promise2 = checkExists("topics", "slug", topic);
+    promiseAllArr.push(promise2);
+  }
+  return Promise.all(promiseAllArr).then(([articles, topic]) => {
+    console.log(articles.rows);
+    return articles.rows;
   });
 };

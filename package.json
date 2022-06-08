@@ -9,7 +9,7 @@
     "seed": "node ./db/seeds/run-seed.js",
     "test": "jest",
     "prepare": "husky install",
-    "start": "node listen"
+    "start": "node listen.js"
   },
   "repository": {
     "type": "git",

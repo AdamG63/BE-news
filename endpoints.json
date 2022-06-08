@@ -23,5 +23,67 @@
         }
       ]
     }
+  },
+  "PATCH /api/articles/:article_id": {
+    "Description": "Serves an updated article",
+    "queries": [],
+    "exampleResponses": {
+      "articles": [
+        {
+          "article_id": 1,
+          "title": "Living in the shadow of a great man",
+          "topic": "mitch",
+          "author": "butter_bridge",
+          "body": "I find this existence challenging",
+          "created_at": "2020-07-09T20:11:00.000Z",
+          "votes": 200
+        }
+      ]
+    }
+  },
+  "GET /api/users": {
+    "Description": "Serves an array of objects with the username, name and avatar_url properties",
+    "queries": [],
+    "exampleResponses": {
+      "users": [
+        {
+          "username": "butter_bridge",
+          "name": "jonny",
+          "avatar_url": "https://www.healthytherapies.com/wp-content/uploads/2016/06/Lime3.jpg"
+        }
+      ]
+    }
+  },
+  "GET /api/articles/:article_id/comments": {
+    "Description": "Serves an array of matching comments when passed article_id",
+    "queries": [],
+    "exampleResponses": [
+      {
+        "body": "This is a bad article name",
+        "votes": 1,
+        "author": "butter_bridge",
+        "article_id": 6,
+        "created_at": 1602433380000
+      }
+    ]
+  },
+  "POST /api/articles/:article_id/comments": {
+    "Description": "Serves a comment added to the datebase",
+    "queries": [],
+    "exampleResponses": [
+      {
+        "votes": 0,
+        "article_id": 9,
+        "created_at": 1606176480000,
+        "body": "hello this is a test",
+        "author": "icellusedkars",
+        "comment_id": 19
+      }
+    ]
+  },
+  "DELETE /api/comments/:comment_id": {
+    "Description": "Deletes a comment when passed a article id",
+    "queries": [],
+    "exampleResponses": []
   }
 }

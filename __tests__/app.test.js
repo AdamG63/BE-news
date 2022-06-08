@@ -407,4 +407,18 @@ describe("DELETE /api/comments/:comment_id", () => {
         expect(body.message).toBe("Bad request");
       });
   });
+
+  describe("GET /api", () => {
+    test("should return a JSON object containing info for all the available endpoints", () => {
+      return request(app)
+        .get("/api")
+        .expect(200)
+        .then((response) => {
+          const { endpoints } = response.body;
+          expect(endpoints["GET /api"].description).toBe(
+            "serves up a json representation of all the available endpoints of the api"
+          );
+        });
+    });
+  });
 });

@@ -1,4 +1,5 @@
 const express = require("express");
+const { getApi } = require("./controller/api.controller");
 const { getTopics } = require("./controller/topics.contoller");
 const {
   getArticleById,
@@ -31,6 +32,8 @@ app.get("/api/articles/:article_id/comments", getCommentsById);
 app.post("/api/articles/:article_id/comments", postComments);
 
 app.delete("/api/comments/:comment_id", deleteCommentById);
+
+app.get("/api", getApi);
 
 app.use((err, req, res, next) => {
   if (err.code === "22P02" || err.code === "23502") {
@@ -68,6 +71,7 @@ app.all("/*", (req, res) => {
   res.status(404).send({ msg: "Not found" });
 });
 app.use((err, req, res, next) => {
+  console.log(err);
   res.status(500).send("internal server error");
 });
 

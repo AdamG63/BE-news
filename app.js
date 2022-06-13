@@ -1,3 +1,4 @@
+const cors = require("cors");
 const express = require("express");
 const { getApi } = require("./controller/api.controller");
 const { getTopics } = require("./controller/topics.contoller");
@@ -12,8 +13,9 @@ const {
   postComments,
   deleteCommentById,
 } = require("./controller/comments.controller");
-const res = require("express/lib/response");
 const app = express();
+
+app.use(cors());
 
 app.use(express.json());
 

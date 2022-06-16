@@ -386,7 +386,7 @@ describe("POST /api/articles/:article_id/comments", () => {
 });
 describe("DELETE /api/comments/:comment_id", () => {
   test("204: responds with 204 when passed a suitable aritcle id to delete", () => {
-    const COMMENT_ID = 1;
+    const COMMENT_ID = 10;
     return request(app).delete(`/api/comments/${COMMENT_ID}`).expect(204);
   });
   test("404: responds with not found when passed a comment_id that does not exist", () => {

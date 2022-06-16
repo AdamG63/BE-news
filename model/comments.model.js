@@ -25,12 +25,18 @@ exports.insertComment = (article_id, updateBody) => {
     });
 };
 
-exports.removeCommentbyId = (comment_id) => {
-  const promise1 = db.query("DELETE FROM comments WHERE article_id = $1", [
-    comment_id,
-  ]);
-  const promise2 = checkExists("comments", "comment_id", comment_id);
-  return Promise.all([promise1, promise2]).then((rows) => {
-    return rows[0];
-  });
+exports.removeCommentbyId = async (id) => {
+  const noComment = await db.query(
+    "SELECT * FROM comments WHERE comment_id = $1;",
+    [id]
+  );
+  if (noComment.rows.length === 0) {
+    return Promise.reject();
+  }
+
+  const deleted = await db.query(
+    `DELETE FROM comments WHERE comment_id = $1;`,
+    [id]
+  );
+  return deleted;
 };

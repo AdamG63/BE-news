@@ -10,7 +10,7 @@
     }
   },
   "GET /api/articles": {
-    "description": "serves an array of all topics",
+    "description": "serves an array of all articles",
     "queries": ["author", "topic", "sort_by", "order"],
     "exampleResponse": {
       "articles": [
@@ -68,7 +68,7 @@
     ]
   },
   "POST /api/articles/:article_id/comments": {
-    "Description": "Serves a comment added to the datebase",
+    "Description": "Serves a comment added to the database",
     "queries": [],
     "exampleResponses": [
       {
@@ -82,7 +82,7 @@
     ]
   },
   "DELETE /api/comments/:comment_id": {
-    "Description": "Deletes a comment when passed a article id",
+    "Description": "Deletes a comment when passed a comment id",
     "queries": [],
     "exampleResponses": []
   }

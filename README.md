@@ -1,3 +1,7 @@
+Northcoders News API
+
+Live link: https://adams-api.herokuapp.com/api
+
 Summary
 
 This API was built using TDD with Jest as the testing framework. The backend framework used for the routes is Express and for the database PSQL.
